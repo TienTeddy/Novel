@@ -2,4 +2,4 @@
 ## Technologies
 - ASP .NET Core 3.1
 - Entity Framework Core 3.1
-## Ho to configure and run
+## How to configure and run
