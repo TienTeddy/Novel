@@ -13,10 +13,10 @@ namespace Novel.DAL.Configurations
         {
             builder.ToTable("OrderDetails");
 
-            builder.HasOne(x => x.order).WithMany(x => x.OrderDetails)
+            builder.HasOne(x => x.Order).WithMany(x => x.OrderDetails)
                 .HasForeignKey(x=>x.id_order);
 
-            builder.HasOne(x => x.product).WithMany(x => x.OrderDetails)
+            builder.HasOne(x => x.Product).WithMany(x => x.OrderDetails)
                 .HasForeignKey(x => x.id_product);
             //throw new NotImplementedException();
         }

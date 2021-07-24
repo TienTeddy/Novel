@@ -14,5 +14,6 @@ namespace Novel.DAL.Entities
         public Status status { get; set; }
 
         public List<ProductInCategory> ProductInCategories { get; set; }
+        public List<CategoryTranslation> CategoryTranslations { get; set; }
     }
 }

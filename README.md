@@ -7,3 +7,6 @@
 - Microsoft.EntityFrameWorkCore.Design
 - Microsoft.EntityFrameWorkCore.Tools
 ## How to configure and run
+## Tutorial Design Database (Project.DAL)
+- Create folder and class
+-- Configurations[OrderConfiguraition,OrderDetailConfiguration], EF[ProjectDbContext], Entities[Order,OrderDetail]  

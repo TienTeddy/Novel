@@ -15,10 +15,10 @@ namespace Novel.DAL.Configurations
 
             builder.HasKey(x => new { x.id_category, x.id_product });
 
-            builder.HasOne(p => p.product).WithMany(pic => pic.ProductInCategories)
+            builder.HasOne(p => p.Product).WithMany(pic => pic.ProductInCategories)
                 .HasForeignKey(pic=>pic.id_product);
 
-            builder.HasOne(c => c.category).WithMany(pic => pic.ProductInCategories)
+            builder.HasOne(c => c.Category).WithMany(pic => pic.ProductInCategories)
                 .HasForeignKey(pic=>pic.id_category);
             //throw new NotImplementedException();
         }
