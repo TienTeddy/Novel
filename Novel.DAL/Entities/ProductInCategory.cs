@@ -8,10 +8,10 @@ namespace Novel.DAL.Entities
     {
         public int id_product { get; set; }
 
-        public Product product { get; set; }
+        public Product Product { get; set; }
 
         public int id_category { get; set; }
 
-        public Category category { get; set; }
+        public Category Category { get; set; }
     }
 }

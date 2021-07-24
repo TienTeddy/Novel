@@ -17,9 +17,8 @@ namespace Novel.DAL.Entities
         public string seo_alias { get; set; }
         public string id_language { set; get; }
 
-        public Product product { get; set; }
+        public Product Product { get; set; }
 
-        public Language language { get; set; }
-
+        public Language Language { get; set; }
     }
 }
