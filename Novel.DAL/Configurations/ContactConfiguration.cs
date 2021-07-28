@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Novel.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,6 +21,8 @@ namespace Novel.DAL.Configurations
             builder.Property(x => x.email).HasMaxLength(200).IsRequired();
             builder.Property(x => x.phone_number).HasMaxLength(200).IsRequired();
             builder.Property(x => x.message).IsRequired();
+
+
         }
     }
 }

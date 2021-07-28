@@ -10,11 +10,11 @@ namespace Novel.DAL.Entities
         public int id_promotion { set; get; }
         public DateTime from_date { set; get; }
         public DateTime to_date { set; get; }
-        public bool apply_for_all { set; get; }
+        public bool ApplyForAll { set; get; }
         public int? discount_percent { set; get; }
         public decimal? discount_amount { set; get; }
         public string id_product { set; get; }
-        public string id_product_category { set; get; }
+        public string id_productCategory { set; get; }
         public Status status { set; get; }
         public string name { set; get; }
 

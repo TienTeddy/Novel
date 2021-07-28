@@ -6,7 +6,7 @@ namespace Novel.DAL.Entities
 {
     public class CategoryTranslation
     {
-        public int id_category_translation { set; get; }
+        public int id_categoryTranslation { set; get; }
         public int id_category { set; get; }
         public string name { set; get; }
         public string seo_description { set; get; }

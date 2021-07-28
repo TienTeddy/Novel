@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Novel.Data.Entities
+namespace Novel.DAL.Entities
 {
     public class AppUser : IdentityUser<Guid>
     {

@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Novel.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,7 +17,7 @@ namespace Novel.DAL.Configurations
 
             builder.Property(x => x.id_order).UseIdentityColumn();
 
-            builder.Property(x => x.order_date).HasDefaultValue(DateTime.Now);
+            builder.Property(x => x.order_date);
 
             builder.Property(x => x.ship_email).IsRequired().IsUnicode(false).HasMaxLength(50);
 
@@ -27,8 +27,10 @@ namespace Novel.DAL.Configurations
             builder.Property(x => x.ship_name).IsRequired().HasMaxLength(200);
 
 
-            builder.Property(x => x.ship_phone_number).IsRequired().HasMaxLength(200);
-            //throw new NotImplementedException();
+            builder.Property(x => x.ship_phoneNumber).IsRequired().HasMaxLength(200);
+
+            builder.HasOne(x => x.AppUser).WithMany(x => x.Orders).HasForeignKey(x => x.id_user);
+
         }
     }
 }

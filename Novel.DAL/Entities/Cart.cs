@@ -1,5 +1,4 @@
-﻿using Novel.Data.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,9 +10,13 @@ namespace Novel.DAL.Entities
         public int id_product { set; get; }
         public int quantity { set; get; }
         public decimal price { set; get; }
+
         public Guid id_user { get; set; }
-        public DateTime date_created { get; set; }
+
         public Product Product { get; set; }
+
+        public DateTime date_create { get; set; }
+
         public AppUser AppUser { get; set; }
     }
 }

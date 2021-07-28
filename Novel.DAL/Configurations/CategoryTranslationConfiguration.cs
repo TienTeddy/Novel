@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Novel.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +13,9 @@ namespace Novel.DAL.Configurations
         {
             builder.ToTable("CategoryTranslations");
 
-            builder.HasKey(x => x.id_category_translation);
+            builder.HasKey(x => x.id_categoryTranslation);
 
-            builder.Property(x => x.id_category_translation).UseIdentityColumn();
+            builder.Property(x => x.id_categoryTranslation).UseIdentityColumn();
 
 
             builder.Property(x => x.name).IsRequired().HasMaxLength(200);
@@ -31,6 +31,7 @@ namespace Novel.DAL.Configurations
             builder.HasOne(x => x.Language).WithMany(x => x.CategoryTranslations).HasForeignKey(x => x.id_language);
 
             builder.HasOne(x => x.Category).WithMany(x => x.CategoryTranslations).HasForeignKey(x => x.id_category);
+
         }
     }
 }

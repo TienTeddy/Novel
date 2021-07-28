@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Novel.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Novel.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +15,7 @@ namespace Novel.DAL.Configurations
             builder.Property(x => x.first_name).IsRequired().HasMaxLength(200);
             builder.Property(x => x.last_name).IsRequired().HasMaxLength(200);
             builder.Property(x => x.Dob).IsRequired();
+
         }
     }
 }

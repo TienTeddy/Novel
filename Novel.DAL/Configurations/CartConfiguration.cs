@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Novel.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,12 +16,10 @@ namespace Novel.DAL.Configurations
 
             builder.Property(x => x.id_cart).UseIdentityColumn();
 
-            builder.HasOne(x => x.Product).WithMany(x => x.Carts)
-                .HasForeignKey(x => x.id_product);
-            builder.HasOne(x => x.AppUser).WithMany(x => x.Carts)
-                .HasForeignKey(x => x.id_user);
 
-            //throw new NotImplementedException();
+            builder.HasOne(x => x.Product).WithMany(x => x.Carts).HasForeignKey(x => x.id_product);
+            builder.HasOne(x => x.AppUser).WithMany(x => x.Carts).HasForeignKey(x => x.id_user);
+
         }
     }
 }

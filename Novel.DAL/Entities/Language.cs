@@ -10,10 +10,10 @@ namespace Novel.DAL.Entities
 
         public string name { get; set; }
 
-        public bool is_default { get; set; }
+        public bool IsDefault { get; set; }
 
         public List<ProductTranslation> ProductTranslations { get; set; }
 
-        public List<CategoryTranslation> CategoryTranslations { get; set; }
+        public List<CategoryTranslation> CategoryTranslations   { get; set; }
     }
 }

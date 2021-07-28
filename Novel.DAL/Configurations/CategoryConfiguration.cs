@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Novel.DAL.Entities;
+﻿using Novel.DAL.Entities;
 using Novel.DAL.Enum;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,8 +16,10 @@ namespace Novel.DAL.Configurations
 
             builder.HasKey(x => x.id_category);
 
-            builder.Property(x=>x.status).HasDefaultValue(Status.Active);
-            //throw new NotImplementedException();
+            builder.Property(x => x.id_category).UseIdentityColumn();
+
+
+            builder.Property(x => x.status).HasDefaultValue(Status.Active);
         }
     }
 }

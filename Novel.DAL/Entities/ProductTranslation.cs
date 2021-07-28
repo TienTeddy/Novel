@@ -6,7 +6,7 @@ namespace Novel.DAL.Entities
 {
     public class ProductTranslation
     {
-        public int id_product_translation { set; get; }
+        public int id_productTranslation { set; get; }
         public int id_product { set; get; }
         public string name { set; get; }
         public string description { set; get; }
@@ -20,5 +20,6 @@ namespace Novel.DAL.Entities
         public Product Product { get; set; }
 
         public Language Language { get; set; }
+
     }
 }
