@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Novel.DAL.Extentions;
 
 namespace Novel.DAL.EF
 {
@@ -40,6 +41,8 @@ namespace Novel.DAL.EF
             modelBuilder.ApplyConfiguration(new SlideConfiguration());
             //base.OnModelCreating(modelBuilder);
 
+            //Seeding Database
+            modelBuilder.Seed();
         }
 
         public DbSet<Product> Products { get; set; }
