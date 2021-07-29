@@ -16,4 +16,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Novel.DAL\Novel.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
