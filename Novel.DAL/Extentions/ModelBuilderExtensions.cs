@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -102,6 +103,41 @@ namespace Novel.DAL.Extentions
             modelBuilder.Entity<ProductInCategory>().HasData(
                 new ProductInCategory() { id_category = 1 , id_product = 1}
                 );
+
+
+            // any guid
+            var roleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC");
+            var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = roleId,
+                Name = "admin",
+                NormalizedName = "admin",
+                Description = "Administrator role"
+            });
+
+            var hasher = new PasswordHasher<AppUser>();
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = adminId,
+                UserName = "admin",
+                NormalizedUserName = "admin",
+                Email = "tienle10998@gmail.com",
+                NormalizedEmail = "tienle10998@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "abc123@"),
+                SecurityStamp = string.Empty,
+                first_name = "Tien",
+                last_name = "Lee",
+                Dob = new DateTime(2020, 01, 31)
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid>
+                {
+                    RoleId = roleId,
+                    UserId = adminId
+                });
         }
     }
 }
