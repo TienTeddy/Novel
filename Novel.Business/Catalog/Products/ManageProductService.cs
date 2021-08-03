@@ -1,7 +1,4 @@
-﻿using Novel.Business.Catalog.Products.Dtos;
-using Novel.Business.Catalog.Products.Dtos.Manage;
-using Novel.Business.Dtos;
-using Novel.DAL.EF;
+﻿using Novel.DAL.EF;
 using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,15 +7,24 @@ using System.Threading.Tasks;
 using Utilities.Exceptions;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Novel.ViewModels.Catalog.Products.Manage;
+using Novel.ViewModels.Common;
+using Novel.ViewModels.Catalog.Products;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
+using System.IO;
+using Novel.Business.Common;
 
 namespace Novel.Business.Catalog.Products.ManageProductService
 {
     public class ManageProductService : IManageProductService
     {
         private readonly ShopDbContext _context;
-        public ManageProductService(ShopDbContext context)
+        private readonly IStorageService _storageService;
+        public ManageProductService(ShopDbContext context, IStorageService storageService)
         {
             _context = context;
+            _storageService = storageService;
         }
 
         public async Task AddViewCount(int productId)
@@ -54,6 +60,22 @@ namespace Novel.Business.Catalog.Products.ManageProductService
 
             };
 
+            //Save Thumbnail Image
+            if (request.thumbnailImage != null)
+            {
+                product.ProductImages = new List<ProductImage>()
+                {
+                    new ProductImage()
+                    {
+                        caption=$"Thumbnail Image {request.name}",
+                        date_created=DateTime.Now,
+                        file_size=request.thumbnailImage.Length,
+                        image_path=await this.SaveFile(request.thumbnailImage),
+                        IsDefault=true,
+                        sort_order=1
+                    }
+                };
+            }
             _context.Products.Add(product);
             return await _context.SaveChangesAsync();
             //throw new NotImplementedException();
@@ -65,6 +87,11 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             if (product == null)
             {
                 throw new NovelException($"Cannot find is product {productId}");
+            }
+            var images = _context.ProductImages.Where(x => x.id_product == productId);
+            foreach(var image in images)
+            {
+                await _storageService.DeleteFileAsync(image.image_path);
             }
 
             _context.Products.Remove(product);
@@ -138,6 +165,19 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             productTranslation.seo_title = request.seo_title;
             productTranslation.description = request.description;
             productTranslation.details = request.details;
+
+            //Save Thumbnail Image
+            if (request.thumbnailImage != null)
+            {
+                var thumbnail_Image = await _context.ProductImages.FirstOrDefaultAsync(x => x.IsDefault == true && x.id_product == request.id_product);
+                if (thumbnail_Image != null)
+                {
+                    thumbnail_Image.caption = $"Thumbnail Image {request.name}";
+                    thumbnail_Image.file_size = request.thumbnailImage.Length;
+                    thumbnail_Image.image_path = await this.SaveFile(request.thumbnailImage);
+                    _context.ProductImages.Update(thumbnail_Image);
+                }                
+            }
             return await _context.SaveChangesAsync();
         }
 
@@ -161,6 +201,73 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             }
             product.stock += addedQuantity;
             return await _context.SaveChangesAsync() > 0;
+        }
+
+
+        public async Task<int> AddImages(int productId, List<IFormFile> formFiles)
+        {
+            var images = await _context.ProductImages.FirstOrDefaultAsync(x => x.id_product == productId);
+            if (images != null)
+            {
+                throw new NovelException($"Product Id exist!");
+            }
+
+            int flag = 1;
+            var listImage = new List<ProductImage>();
+            var img = new ProductImage();
+            if (formFiles != null)
+            {
+                foreach(var formFile in formFiles)
+                {
+                    img.caption = $"Thumbnail Image {formFile.FileName}";
+                    img.date_created = DateTime.Now;
+                    img.file_size = formFile.Length;
+                    img.image_path = await this.SaveFile(formFile);
+                    img.IsDefault = true;
+                    img.sort_order = flag;
+                    listImage.Add(img);
+                    flag++;
+                }
+
+                await _context.ProductImages.AddRangeAsync(listImage);
+                return await _context.SaveChangesAsync();
+            }
+
+            throw new NovelException($"The image empty");
+        }
+        public async Task<int> RemoveImage(int imageId)
+        {
+            var image = await _context.ProductImages.FirstOrDefaultAsync(x=>x.id_productImage==imageId);
+            if (image == null)
+            {
+                throw new NovelException($"Image Id doest not exist!");
+            }
+
+             await _storageService.DeleteFileAsync(image.image_path);
+            _context.ProductImages.Remove(image);
+            return await _context.SaveChangesAsync();
+        }
+        public async Task<int> UpdateImages(int imageId, string caption, bool IsDefault)
+        {
+            var image = await _context.ProductImages.FirstOrDefaultAsync(x => x.id_productImage == imageId);
+            if (image == null)
+            {
+                throw new NovelException($"Image Id doest not exist!");
+            }
+
+            image.caption = caption;
+            image.IsDefault = IsDefault;
+            _context.ProductImages.Update(image);
+            return await _context.SaveChangesAsync();
+        }
+
+        //IFormFile
+        private async Task<string> SaveFile(IFormFile formFile)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(formFile.OpenReadStream(), fileName);
+            return fileName;
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿using Novel.Business.Catalog.Products.Dtos;
-using Novel.Business.Catalog.Products.Dtos.Public;
-using Novel.Business.Dtos;
-using Novel.DAL.EF;
+﻿using Novel.DAL.EF;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Novel.ViewModels.Common;
+using Novel.ViewModels.Catalog.Products;
+using Novel.ViewModels.Catalog.Products.Public;
 
 namespace Novel.Business.Catalog.Products
 {
