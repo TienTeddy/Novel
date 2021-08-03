@@ -1,6 +1,7 @@
-﻿using Novel.Business.Catalog.Products.Dtos;
-using Novel.Business.Catalog.Products.Dtos.Manage;
-using Novel.Business.Dtos;
+﻿using Microsoft.AspNetCore.Http;
+using Novel.ViewModels.Catalog.Products;
+using Novel.ViewModels.Catalog.Products.Manage;
+using Novel.ViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,5 +19,9 @@ namespace Novel.Business.Catalog.Products
         Task AddViewCount(int productId);
         //Task<List<ProductViewModel>> GetAll();
         Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
+
+        Task<int> AddImages(int productId, List<IFormFile> formFiles);
+        Task<int> UpdateImages(int imageId, string caption, bool IsDefault);
+        Task<int> RemoveImage(int imageId);
     }
 }
