@@ -10,9 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novel.DAL", "Novel.DAL\Novel.DAL.csproj", "{13B0E063-197D-4622-ACB3-1E94B5F19CAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novel.DAL", "Novel.DAL\Novel.DAL.csproj", "{13B0E063-197D-4622-ACB3-1E94B5F19CAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novel.Business", "Novel.Business\Novel.Business.csproj", "{5571CCF7-83A9-4752-8E68-516DCF558F00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novel.Business", "Novel.Business\Novel.Business.csproj", "{5571CCF7-83A9-4752-8E68-516DCF558F00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{73CDF195-EB37-480E-BF0D-53EC6B773748}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{5571CCF7-83A9-4752-8E68-516DCF558F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5571CCF7-83A9-4752-8E68-516DCF558F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5571CCF7-83A9-4752-8E68-516DCF558F00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73CDF195-EB37-480E-BF0D-53EC6B773748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73CDF195-EB37-480E-BF0D-53EC6B773748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73CDF195-EB37-480E-BF0D-53EC6B773748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73CDF195-EB37-480E-BF0D-53EC6B773748}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

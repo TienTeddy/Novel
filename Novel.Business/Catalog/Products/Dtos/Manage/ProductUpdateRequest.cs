@@ -4,15 +4,9 @@ using System.Text;
 
 namespace Novel.Business.Catalog.Products.Dtos
 {
-    public class ProductViewModel
+    public class ProductUpdateRequest
     {
         public int id_product { set; get; }
-        public decimal price { set; get; }
-        public decimal original_price { set; get; }
-        public int stock { set; get; }
-        public int view_count { set; get; }
-        public DateTime date_created { set; get; }
-
         public string name { set; get; }
         public string description { set; get; }
         public string details { set; get; }

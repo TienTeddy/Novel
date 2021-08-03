@@ -1,13 +1,15 @@
 ﻿using Novel.Business.Catalog.Products.Dtos;
+using Novel.Business.Catalog.Products.Dtos.Public;
 using Novel.Business.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Novel.Business.Catalog.Products
 {
     public interface IPublicProductRequest
     {
-        PagedViewModel<ProductViewModel> GetAllByCategoryId(int categoryId, int pageIndex, int pageSize);
+        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request);
     }
 }
