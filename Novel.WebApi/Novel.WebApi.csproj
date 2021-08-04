@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Novel.Business\Novel.Business.csproj" />
+    <ProjectReference Include="..\Novel.DAL\Novel.DAL.csproj" />
+    <ProjectReference Include="..\Novel.ViewModels\Novel.ViewModels.csproj" />
+    <ProjectReference Include="..\Utilities\Utilities.csproj" />
+  </ItemGroup>
+
+</Project>

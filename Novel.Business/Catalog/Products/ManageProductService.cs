@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using Utilities.Exceptions;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Novel.ViewModels.Catalog.Products.Manage;
-using Novel.ViewModels.Common;
 using Novel.ViewModels.Catalog.Products;
+using Novel.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using Novel.Business.Common;
+using Novel.Business.Catalog.Products;
 
 namespace Novel.Business.Catalog.Products.ManageProductService
 {
@@ -99,7 +99,7 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             //throw new NotImplementedException();
         }
 
-        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
+        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request)
         {
             //Select join
             var query = from product in _context.Products

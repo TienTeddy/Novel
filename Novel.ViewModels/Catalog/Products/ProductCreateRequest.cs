@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Novel.Business.Catalog.Products.Dtos
+namespace Novel.Business.Catalog.Products
 {
     public class ProductCreateRequest
     {
@@ -16,5 +17,6 @@ namespace Novel.Business.Catalog.Products.Dtos
         public string seo_title { set; get; }
         public string seo_alias { get; set; }
         public string id_language { set; get; }
+        public IFormFile thumbnailImage { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Novel.Business.Catalog.Products;
 using Novel.ViewModels.Catalog.Products;
-using Novel.ViewModels.Catalog.Products.Manage;
 using Novel.ViewModels.Common;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Novel.Business.Catalog.Products
         Task<bool> UpdateStock(int productId, int addedQuantity);
         Task AddViewCount(int productId);
         //Task<List<ProductViewModel>> GetAll();
-        Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
+        Task<PagedResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 
         Task<int> AddImages(int productId, List<IFormFile> formFiles);
         Task<int> UpdateImages(int imageId, string caption, bool IsDefault);
