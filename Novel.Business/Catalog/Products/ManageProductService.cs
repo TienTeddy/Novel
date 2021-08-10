@@ -1,4 +1,4 @@
-﻿using Novel.DAL.EF;
+﻿    using Novel.DAL.EF;
 using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,14 +8,14 @@ using Utilities.Exceptions;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Novel.ViewModels.Catalog.Products;
+using Novel.ViewModels.Catalog.ProductImages;
 using Novel.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using Novel.Business.Common;
-using Novel.Business.Catalog.Products;
 
-namespace Novel.Business.Catalog.Products.ManageProductService
+namespace Novel.Business.Catalog.Products
 {
     public class ManageProductService : IManageProductService
     {
@@ -77,7 +77,8 @@ namespace Novel.Business.Catalog.Products.ManageProductService
                 };
             }
             _context.Products.Add(product);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return product.id_product;
             //throw new NotImplementedException();
         }
 
@@ -89,13 +90,17 @@ namespace Novel.Business.Catalog.Products.ManageProductService
                 throw new NovelException($"Cannot find is product {productId}");
             }
             var images = _context.ProductImages.Where(x => x.id_product == productId);
-            foreach(var image in images)
+            if (images != null)
             {
-                await _storageService.DeleteFileAsync(image.image_path);
+                foreach (var image in images)
+                {
+                    await _storageService.DeleteFileAsync(image.image_path);
+                }
             }
 
             _context.Products.Remove(product);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return product.id_product;
             //throw new NotImplementedException();
         }
 
@@ -144,7 +149,8 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             var pagedResult = new PagedResult<ProductViewModel>()
             {
                 TotalRecord = totalRow,
-                Items = data
+                Items = data,
+                Message="Get all product success."
             };
             return pagedResult;
         }
@@ -178,9 +184,9 @@ namespace Novel.Business.Catalog.Products.ManageProductService
                     _context.ProductImages.Update(thumbnail_Image);
                 }                
             }
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return product.id_product;
         }
-
         public async Task<bool> UpdatePrice(int productId, decimal newPrice)
         {
             var product = await _context.Products.FindAsync(productId);
@@ -191,7 +197,6 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             product.price = newPrice;
             return await _context.SaveChangesAsync() > 0;
         }
-
         public async Task<bool> UpdateStock(int productId, int addedQuantity)
         {
             var product = await _context.Products.FindAsync(productId);
@@ -203,51 +208,65 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             return await _context.SaveChangesAsync() > 0;
         }
 
-
-        public async Task<int> AddImages(int productId, List<IFormFile> formFiles)
+        #region Images
+        public  async Task<PagedResult<ProductImageViewModel>> GetProductImages(int productId)
         {
-            var images = await _context.ProductImages.FirstOrDefaultAsync(x => x.id_product == productId);
-            if (images != null)
+            var result = _context.ProductImages.Where(x => x.id_product == productId);
+
+            int totalRow = await result.CountAsync();
+
+            var images = new List<ProductImageViewModel>();
+            var image = new ProductImageViewModel();
+
+            foreach (var p in result)
+            {
+                image.id_productImage = p.id_productImage;
+                image.id_product = p.id_product;
+                image.image_path = p.image_path;
+                image.caption = p.caption;
+                image.IsDefault = p.IsDefault;
+                image.date_created = p.date_created;
+                image.sort_order = p.sort_order;
+                image.file_size = p.file_size;
+                images.Add(image);
+            }
+
+            var pagedResult = new PagedResult<ProductImageViewModel>()
+            {
+                TotalRecord = totalRow,
+                Items = images,
+                Message = "Get all product success."
+            };
+            return pagedResult;
+        }
+        public async Task<int> AddImages(ProductImageCreate_UpdateRequest formFiles)
+        {
+            if (formFiles == null)
+            {
+                throw new NovelException($"The image empty");
+            }
+            var images = await _context.Products.FirstOrDefaultAsync(x => x.id_product == formFiles.id_product);
+            if (images == null)
             {
                 throw new NovelException($"Product Id exist!");
             }
 
-            int flag = 1;
-            var listImage = new List<ProductImage>();
-            var img = new ProductImage();
-            if (formFiles != null)
+            var productImage = new ProductImage()
             {
-                foreach(var formFile in formFiles)
-                {
-                    img.caption = $"Thumbnail Image {formFile.FileName}";
-                    img.date_created = DateTime.Now;
-                    img.file_size = formFile.Length;
-                    img.image_path = await this.SaveFile(formFile);
-                    img.IsDefault = true;
-                    img.sort_order = flag;
-                    listImage.Add(img);
-                    flag++;
-                }
+                id_product = formFiles.id_product,
+                caption = (formFiles.caption == null) ? "Thumbnail image" : formFiles.caption,
+                date_created = DateTime.Now,
+                file_size = formFiles.thumbnailImage.Length,
+                image_path = await this.SaveFile(formFiles.thumbnailImage),
+                IsDefault = formFiles.IsDefault,
+                sort_order = 1
+            };
 
-                await _context.ProductImages.AddRangeAsync(listImage);
-                return await _context.SaveChangesAsync();
-            }
+            _context.ProductImages.Add(productImage);
+            return await _context.SaveChangesAsync();
 
-            throw new NovelException($"The image empty");
         }
         public async Task<int> RemoveImage(int imageId)
-        {
-            var image = await _context.ProductImages.FirstOrDefaultAsync(x=>x.id_productImage==imageId);
-            if (image == null)
-            {
-                throw new NovelException($"Image Id doest not exist!");
-            }
-
-             await _storageService.DeleteFileAsync(image.image_path);
-            _context.ProductImages.Remove(image);
-            return await _context.SaveChangesAsync();
-        }
-        public async Task<int> UpdateImages(int imageId, string caption, bool IsDefault)
         {
             var image = await _context.ProductImages.FirstOrDefaultAsync(x => x.id_productImage == imageId);
             if (image == null)
@@ -255,11 +274,41 @@ namespace Novel.Business.Catalog.Products.ManageProductService
                 throw new NovelException($"Image Id doest not exist!");
             }
 
-            image.caption = caption;
-            image.IsDefault = IsDefault;
+            await _storageService.DeleteFileAsync(image.image_path);
+            _context.ProductImages.Remove(image);
+            return await _context.SaveChangesAsync();
+        }
+        public async Task<int> UpdateImages(int imageId, ProductImageCreate_UpdateRequest productImage)
+        {
+            var image = await _context.ProductImages.FirstOrDefaultAsync(x => x.id_productImage == imageId);
+            if (image == null)
+            {
+                throw new NovelException($"Image Id doest not exist!");
+            }
+
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.id_product == productImage.id_product);
+            if (product == null)
+            {
+                throw new NovelException($"Product Id doest not exist!");
+            }
+
+            image.id_product = productImage.id_product;
+            image.caption = productImage.caption == null ? "Thumnail image" : productImage.caption;
+            image.IsDefault = productImage.IsDefault;
+
+            if (productImage.thumbnailImage != null)
+            {
+
+                image.file_size = productImage.thumbnailImage.Length;
+                await _storageService.DeleteFileAsync(image.image_path);
+                image.image_path = await this.SaveFile(productImage.thumbnailImage);
+
+            }
             _context.ProductImages.Update(image);
             return await _context.SaveChangesAsync();
         }
+
+        #endregion
 
         //IFormFile
         private async Task<string> SaveFile(IFormFile formFile)
@@ -268,6 +317,39 @@ namespace Novel.Business.Catalog.Products.ManageProductService
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(formFile.OpenReadStream(), fileName);
             return fileName;
+        }
+
+        public async Task<List<ProductViewModel>> GetById(int productId, string languageId)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(x=>x.id_product==productId);
+
+            if (product == null)
+            {
+                throw new NovelException("Cannot find product");
+            }
+        
+            var result= from p in _context.Products
+                        join pt in _context.ProductTranslations on p.id_product equals pt.id_product
+                        where pt.id_language==languageId
+                        select new { p, pt };
+
+            var res = await result.Select(x => new ProductViewModel()
+            {
+                id_product = x.p.id_product,
+                name = x.pt.name,
+                date_created = x.p.date_created,
+                description = x.pt.description,
+                details = x.pt.details,
+                id_language = x.pt.id_language,
+                price = x.p.price,
+                original_price = x.p.original_price,
+                seo_alias = x.pt.seo_alias,
+                seo_description = x.pt.seo_description,
+                seo_title = x.pt.seo_title,
+                stock = x.p.stock,
+                view_count = x.p.view_count
+            }).ToListAsync();
+            return res;
         }
     }
 }

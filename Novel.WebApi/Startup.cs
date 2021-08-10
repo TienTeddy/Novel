@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Novel.Business.Catalog.Products;
+using Novel.Business.Common;
 using Novel.DAL.EF;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace Novel.WebApi
 
             //Declare DI (Dependency Injection)
             services.AddTransient<IPublicProductService, PublicProductService>();
+            services.AddTransient<IManageProductService, ManageProductService>();
+            services.AddTransient<IStorageService, FileStorageService>();
 
             services.AddControllersWithViews();
 

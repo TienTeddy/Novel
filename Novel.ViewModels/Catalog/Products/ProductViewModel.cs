@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Novel.ViewModels.Catalog.ProductImages;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,5 +22,7 @@ namespace Novel.ViewModels.Catalog.Products
 
         public string seo_alias { get; set; }
         public string id_language { set; get; }
+
+        public List<ProductImageViewModel> productImages { get; set; }
     }
 }

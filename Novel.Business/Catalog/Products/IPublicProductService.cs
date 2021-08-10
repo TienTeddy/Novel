@@ -10,6 +10,6 @@ namespace Novel.Business.Catalog.Products
     public interface IPublicProductService
     {
         Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
-        Task<PagedResult<ProductViewModel>> GetAll(); 
+        Task<PagedResult<ProductViewModel>> GetAll(string languageId); 
     }
 }
