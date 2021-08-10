@@ -8,5 +8,6 @@ namespace Novel.ViewModels.Common
     {
         public List<T> Items { get; set; }
         public int TotalRecord { get; set; }
+        public string Message { get; set; }
     }
 }

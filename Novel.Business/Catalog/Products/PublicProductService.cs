@@ -7,6 +7,8 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Novel.ViewModels.Common;
 using Novel.ViewModels.Catalog.Products;
+using Novel.DAL.Entities;
+using Novel.ViewModels.Catalog.ProductImages;
 
 namespace Novel.Business.Catalog.Products
 {
@@ -18,12 +20,13 @@ namespace Novel.Business.Catalog.Products
             _context = context;
         }
 
-        public async Task<PagedResult<ProductViewModel>> GetAll()
+        public async Task<PagedResult<ProductViewModel>> GetAll(string languageId)
         {
-            var query =  from product in _context.Products
+            var query = from product in _context.Products
+                        //join productImages in _context.ProductImages on product.id_product equals productImages.id_product
                         join productTranslation in _context.ProductTranslations on product.id_product equals productTranslation.id_product
-                        select new { product, productTranslation };
-
+                        where productTranslation.id_language == languageId
+                        select new { product, productTranslation};
             //Paging 
             int totalRow = await query.CountAsync();
 
@@ -43,11 +46,12 @@ namespace Novel.Business.Catalog.Products
                     seo_title = x.productTranslation.seo_title,
                     stock = x.product.stock,
                     view_count = x.product.view_count
-                }).ToListAsync();
+            }).ToListAsync();
             var pagedResult = new PagedResult<ProductViewModel>()
             {
                 TotalRecord = totalRow,
-                Items = data
+                Items = data,
+                Message = "Get all product success."
             };
             return pagedResult;
         }
@@ -59,6 +63,7 @@ namespace Novel.Business.Catalog.Products
                         join productTranslation in _context.ProductTranslations on product.id_product equals productTranslation.id_product
                         join productInCategory in _context.ProductInCategories on product.id_product equals productInCategory.id_product
                         join category in _context.Categories on productInCategory.id_category equals category.id_category
+                        where productTranslation.id_language==request.LanguageId
                         select new { product, productTranslation, productInCategory };
 
             //Filter
@@ -92,7 +97,8 @@ namespace Novel.Business.Catalog.Products
             var pagedResult = new PagedResult<ProductViewModel>()
             {
                 TotalRecord = totalRow,
-                Items = data
+                Items = data,
+                Message = "Select product in category success."
             };
             return pagedResult;
         }
