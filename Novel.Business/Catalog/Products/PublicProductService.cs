@@ -19,7 +19,6 @@ namespace Novel.Business.Catalog.Products
         {
             _context = context;
         }
-
         public async Task<PagedResult<ProductViewModel>> GetAll(string languageId)
         {
             var query = from product in _context.Products

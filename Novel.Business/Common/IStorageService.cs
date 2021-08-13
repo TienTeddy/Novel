@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Novel.DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -11,5 +12,8 @@ namespace Novel.Business.Common
         string GetFileUrl(string fileName);
         Task SaveFileAsync(Stream mediaBinaryStream, string fileName);
         Task DeleteFileAsync(string fileName);
+
+        Task<string> SaveQrCodeUser (string qrCodeText);
+        Task RemoveQrCodeAsync(string fileName);
     }
 }

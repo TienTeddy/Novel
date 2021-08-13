@@ -1,4 +1,5 @@
-﻿using Novel.ViewModels.Catalog.Products;
+﻿using Novel.DAL.Entities;
+using Novel.ViewModels.Catalog.Products;
 using Novel.ViewModels.Common;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Novel.Business.Catalog.Products
     public interface IPublicProductService
     {
         Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
-        Task<PagedResult<ProductViewModel>> GetAll(string languageId); 
+        Task<PagedResult<ProductViewModel>> GetAll(string languageId);        
     }
 }

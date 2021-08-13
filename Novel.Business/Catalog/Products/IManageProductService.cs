@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Novel.ViewModels.Catalog.QrCodeUsers;
 
 namespace Novel.Business.Catalog.Products
 {
@@ -22,9 +23,15 @@ namespace Novel.Business.Catalog.Products
         Task<List<ProductViewModel>> GetById(int productId, string languageId);
         Task<PagedResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 
+        // Product Images
         Task<PagedResult<ProductImageViewModel>> GetProductImages(int productId);
         Task<int> AddImages(ProductImageCreate_UpdateRequest formFiles);
         Task<int> UpdateImages(int imageId, ProductImageCreate_UpdateRequest productImage);
         Task<int> RemoveImage(int imageId);
+
+        // QrCode User
+        Task<PagedResult<QrCodeUserViewModel>> GetQrCodeId(Guid userId);
+        Task<Guid> CreateQrCodeUser(Guid userId, string qrCodeText);
+        Task<int> RemoveQrCodeUser(Guid userId);
     }
 }

@@ -227,5 +227,48 @@ namespace Novel.WebApi.Controllers
 
             return BadRequest();
         }
+
+        //QR-CODE
+        [HttpGet("qr-code/{userId}")]
+        public async Task<IActionResult> GetQrCodeId(Guid userId)
+        {
+            var qrcode = await _manageProductService.GetQrCodeId(userId);
+            if (qrcode == null)
+            {
+                return BadRequest();
+            }
+            return Ok(qrcode);
+        }
+
+        [HttpPost("qr-code/create")]
+        public async Task<IActionResult> CreateQrCodeUser(Guid userId, string qrCodeText)
+        {
+            var qrcode = await _manageProductService.CreateQrCodeUser(userId, qrCodeText);
+            if (qrcode == null)
+            {
+                return BadRequest();
+            }
+
+            var qr = await _manageProductService.GetQrCodeId(qrcode);
+            return CreatedAtAction(nameof(GetQrCodeId), new { userId = qrcode }, qr);
+        }
+
+        [HttpPost("qr-code/remove")]
+        public async Task<IActionResult> RemoveQrCodeUser(Guid userId)
+        { 
+            var qrcode = await _manageProductService.RemoveQrCodeUser(userId);
+            if (qrcode > 0)
+            {
+                var result = new PagedResult<object>()
+                {
+                    Items = null,
+                    TotalRecord = 1,
+                    Message = "Remove QR-Code success."
+                };
+                return Ok(result);
+            }
+
+            return BadRequest();
+        }
     }
 }

@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using Novel.Business.Common;
+using Novel.ViewModels.Catalog.QrCodeUsers;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Novel.Business.Catalog.Products
 {
@@ -310,14 +313,7 @@ namespace Novel.Business.Catalog.Products
 
         #endregion
 
-        //IFormFile
-        private async Task<string> SaveFile(IFormFile formFile)
-        {
-            var originalFileName = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
-            await _storageService.SaveFileAsync(formFile.OpenReadStream(), fileName);
-            return fileName;
-        }
+        
 
         public async Task<List<ProductViewModel>> GetById(int productId, string languageId)
         {
@@ -351,5 +347,92 @@ namespace Novel.Business.Catalog.Products
             }).ToListAsync();
             return res;
         }
+
+        public async Task<PagedResult<QrCodeUserViewModel>> GetQrCodeId(Guid userId)
+        {
+            var qrcode = await _context.QrCodeUsers.FirstOrDefaultAsync(x => x.id_user == userId);
+            if (qrcode == null)
+            {
+                throw new NovelException("QR-Code not exist.");
+            }
+
+            var list_qrcode = new List<QrCodeUserViewModel>()
+            {
+                new QrCodeUserViewModel()
+                {
+                    id_qrcode=qrcode.id_qrcode,
+                    id_user=qrcode.id_user,
+                    display=qrcode.display,
+                    qrcodeUri=qrcode.qrcodeUri,
+                    create_date=qrcode.create_date
+                }
+            };
+
+            var result = new PagedResult<QrCodeUserViewModel>()
+            {
+                Items = list_qrcode,
+                TotalRecord = list_qrcode.Count(),
+                Message = $"Get QR-Code by Id Success."
+            };
+            return result;
+        }
+        public async Task<Guid> CreateQrCodeUser(Guid userId, string qrCodeText)
+        {
+            var check = await _context.QrCodeUsers.FirstOrDefaultAsync(x=>x.id_user==userId);
+            if (check != null)
+            {
+                throw new NovelException("QR-Code exist.");
+            }
+
+            var qrCode = await _storageService.SaveQrCodeUser(qrCodeText);
+            if (qrCode == null)
+            {
+                throw new NovelException("Error QR-Code");
+            }
+
+            var createQrCode = new QrCodeUser()
+            {
+                id_user = userId,
+                display = $"QR-Code {DateTime.Now}",
+                qrcodeUri= qrCode
+            };
+
+            _context.QrCodeUsers.Add(createQrCode);
+            await _context.SaveChangesAsync();
+            return createQrCode.id_user;
+        }
+        
+        public async Task<int> RemoveQrCodeUser(Guid userId)
+        {
+            var check = await _context.QrCodeUsers.FirstOrDefaultAsync(x => x.id_user == userId);
+            if (check == null)
+            {
+                throw new NovelException("QR-Code not exist.");
+            }
+
+            var qrCode = _storageService.RemoveQrCodeAsync(check.qrcodeUri);
+            _context.QrCodeUsers.Remove(check);
+            return await _context.SaveChangesAsync();
+        }
+
+        #region Exception
+        //IFormFile
+        private async Task<string> SaveFile(IFormFile formFile)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(formFile.OpenReadStream(), fileName);
+            return fileName;
+        }
+        //Draw qrCode
+        private static async Task<Byte[]> BitmapToBytes(Bitmap img)
+        {
+            await using (MemoryStream stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
+            }
+        }
+        #endregion
     }
 }

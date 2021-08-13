@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Novel.Business.Catalog.Products;
 using Novel.Business.Common;
+using Novel.Business.System_;
 using Novel.DAL.EF;
+using Novel.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +35,19 @@ namespace Novel.WebApi
             services.AddDbContext<ShopDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.ConnectionString)));
 
+            services.AddIdentity<AppUser, AppRole>()
+                .AddEntityFrameworkStores<ShopDbContext>()
+                .AddDefaultTokenProviders();
+
             //Declare DI (Dependency Injection)
             services.AddTransient<IPublicProductService, PublicProductService>();
             services.AddTransient<IManageProductService, ManageProductService>();
             services.AddTransient<IStorageService, FileStorageService>();
+            services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
+            services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+            services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+            services.AddTransient<IUserService, UserService>();
+
 
             services.AddControllersWithViews();
 
