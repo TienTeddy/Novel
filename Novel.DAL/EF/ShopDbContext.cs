@@ -41,6 +41,7 @@ namespace Novel.DAL.EF
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
             modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
             modelBuilder.ApplyConfiguration(new SlideConfiguration());
+            modelBuilder.ApplyConfiguration(new QrCodeUserConfiguration());
 
             //AspNetCore Entity Database
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
@@ -54,6 +55,7 @@ namespace Novel.DAL.EF
             //base.OnModelCreating(modelBuilder);
         }
 
+        public DbSet<QrCodeUser> QrCodeUsers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
 
