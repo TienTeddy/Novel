@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +16,8 @@ using Novel.Business.Common;
 using Novel.Business.System_;
 using Novel.DAL.EF;
 using Novel.DAL.Entities;
+using Novel.ViewModels.System.Users;
+using Novel.ViewModels.System.Users.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,9 +53,12 @@ namespace Novel.WebApi
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
+            //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>(); //fluentValidation LoginRequest
 
 
-            services.AddControllersWithViews();
+
+            services.AddControllers().AddFluentValidation(fv => fv //add use fluentValidation
+            .RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); //register validation all
 
             //Swaggger API
             services.AddSwaggerGen(c =>
